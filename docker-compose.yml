@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  movie-identifier-chatbot:
+    build:
+      context: .
+    env_file:
+      - .env
+    volumes:
+      - session-data:/app/session
+
+volumes:
+  session-data:
