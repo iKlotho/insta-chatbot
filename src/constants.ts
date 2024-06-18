@@ -1,8 +1,10 @@
+export const PREDICTION_FAIL_MESSAGE = `Sorry, looks like OpenAI could not identify this.`;
 export const WELCOME_MESSAGE = `
 Hi there! Thanks for using our app. 🎉
 Make sure you’re following our account to use this service. Send us a clip or image, and we’ll identify the movie or series for you.
-Note: You can make 1 request every 3 minutes.
+Note: You can make 1 request every 5 minutes.
 `;
+export const SPRITE_NOT_FOUND_MESSAGE = `Sorry, system couldn't extract any media from this message.`;
 
 export const SYSTEM_PROMPT = `
   You are an expert in identifying movies or series using images with computer vision.
@@ -25,3 +27,4 @@ export const OPENAI_MODEL = "gpt-4o";
 export const OPENAI_MAX_TOKENS = 400;
 
 export const LIMIT_RETRY_INFO = 3;
+export const DEFAULT_REQUEST_DELAY = 5; // 5 minutes

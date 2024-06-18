@@ -14,7 +14,7 @@ export const logger = winston.createLogger({
     winston.format.timestamp(),
     winston.format.printf(({ timestamp, level, message }) => {
       return `${timestamp} [${level.toUpperCase()}]: ${message}`;
-    }),
+    })
   ),
   transports: [
     new winston.transports.Console(),
@@ -25,7 +25,7 @@ export const logger = winston.createLogger({
 export async function writeToFile(
   directory: string,
   filename: string,
-  content: string,
+  content: string
 ): Promise<void> {
   try {
     await fs.mkdir(directory, { recursive: true });
@@ -71,9 +71,17 @@ export async function sessionLoad(): Promise<object | null> {
   if (await sessionExists()) {
     const sessionData = await fs.readFile(
       path.join("session/", "account.session"),
-      "utf-8",
+      "utf-8"
     );
     return JSON.parse(sessionData);
   }
   return null;
+}
+
+export async function saveMessage(message: any): Promise<void> {
+  writeToFile(
+    `./messages_example/${message.thread_id}`,
+    `${message.item_id}_${message.item_type}.json`,
+    JSON.stringify(message)
+  );
 }
