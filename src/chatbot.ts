@@ -54,8 +54,8 @@ export default class ChatBot {
     }
 
     this.ig.state.generateDevice(IG_USERNAME);
-    await this.loadSession();
     await this.ig.simulate.preLoginFlow();
+    await this.loadSession();
     await this.ig.account.login(IG_USERNAME, IG_PASSWORD);
     logger.info(
       `Client initialized with user id ${this.ig.state.cookieUserId}`
