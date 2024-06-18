@@ -18,6 +18,10 @@ class MessageHandler {
   public onMessage = async (data: any) => {
     const { message } = data;
 
+    if (!message.user_id) {
+      return;
+    }
+
     // dont process our messages
     // message.user_id: number
     if (message.user_id === this.accountUserId) {
