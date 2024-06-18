@@ -4,7 +4,6 @@ Make sure you’re following our account to use this service. Send us a clip or 
 Note: You can make 1 request every 3 minutes.
 `;
 
-
 export const SYSTEM_PROMPT = `
   You are an expert in identifying movies or series using images with computer vision.
   Do not explain the image; just provide a list of movies or series that the image is from.
