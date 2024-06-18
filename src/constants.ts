@@ -27,4 +27,4 @@ export const OPENAI_MODEL = "gpt-4o";
 export const OPENAI_MAX_TOKENS = 400;
 
 export const LIMIT_RETRY_INFO = 3;
-export const DEFAULT_REQUEST_DELAY = 5; // 5 minutes
+export const DEFAULT_REQUEST_DELAY = 5; // minutes

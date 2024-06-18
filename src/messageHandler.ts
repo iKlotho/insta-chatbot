@@ -81,7 +81,8 @@ class MessageHandler {
     const prediction = await classifyImage(spriteUrl);
     if (!prediction) {
       logger.error(`Prediction failed for user ${userId}`);
-      return await this.sendUserMessage(userId, PREDICTION_FAIL_MESSAGE);
+      await this.sendUserMessage(userId, PREDICTION_FAIL_MESSAGE);
+      return;
     }
 
     //send the result
