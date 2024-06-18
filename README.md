@@ -29,7 +29,7 @@ OPENAI_API_KEY=
    cd insta-chatbot
    npm install
    export (cat .env |xargs -L 1)
-   ts-node app.ts
+   npm run start
    ```
 
 ## Modifying
