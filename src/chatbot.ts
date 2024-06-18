@@ -1,7 +1,6 @@
 import { IgApiClientRealtime, withRealtime } from "instagram_mqtt";
 import MessageHandler from "./messageHandler";
 import { IgApiClient } from "instagram-private-api";
-import { RateLimiterMemory } from "rate-limiter-flexible";
 import { AuthData, logger } from "./utils";
 import { DEFAULT_REQUEST_DELAY } from "./constants";
 import SessionManager from "./sessionManager";
@@ -21,6 +20,12 @@ export default class ChatBot {
     this.sessionManager = new SessionManager();
   }
 
+  /**
+   * Creates an instance of ChatBot with specified configurations.
+   *
+   * @param {number} [requestDelayMinutes=DEFAULT_REQUEST_DELAY] - Optional. The delay between requests in minutes. Defaults to DEFAULT_REQUEST_DELAY if not provided.
+   * @param {boolean} [notifyLimit=true] - Optional. Whether to notify when the request limit is reached. Defaults to true if not provided.
+   */
   public static async create(
     requestDelayMinutes?: number,
     notifyLimit?: boolean
@@ -33,6 +38,9 @@ export default class ChatBot {
     return instance;
   }
 
+  /**
+   * Starts the ChatBot by connecting to Instagram's real-time service.
+   */
   public async start(): Promise<any> {
     return this.ig.realtime.connect({
       irisData: await this.ig.feed.directInbox().request(),
