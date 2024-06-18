@@ -15,5 +15,4 @@ COPY . .
 
 RUN npm run build
 
-VOLUME ["/app/session"]
 CMD ["node", "./build/app.js"]
