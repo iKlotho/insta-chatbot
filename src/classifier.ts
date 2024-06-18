@@ -3,8 +3,8 @@ import { downloadImageToBase64, logger } from "./utils";
 import {
   OPENAI_MAX_TOKENS,
   OPENAI_MODEL,
-  SystemPrompt,
-  UserPrompt,
+  SYSTEM_PROMPT,
+  USER_PROMPT,
 } from "./constants";
 
 const openai = new OpenAI({
@@ -17,11 +17,11 @@ export async function classifyImage(url: string): Promise<string | null> {
 
     const params: OpenAI.Chat.ChatCompletionCreateParams = {
       messages: [
-        { role: "system", content: SystemPrompt },
+        { role: "system", content: SYSTEM_PROMPT },
         {
           role: "user",
           content: [
-            { type: "text", text: UserPrompt },
+            { type: "text", text: USER_PROMPT },
             { type: "image_url", image_url: { url: base64Image } },
           ],
         },

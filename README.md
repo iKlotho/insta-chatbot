@@ -36,4 +36,4 @@ OPENAI_API_KEY=
 
 `MessageHandler`'s `onMessage` method is invoked when a new message comes from IG.
 
-Edit `SystemPrompt` and `UserPrompt` to change the behaviour.
+Edit `SYSTEM_PROMPT` and `USER_PROMPT` to change the behaviour.

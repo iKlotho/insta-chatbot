@@ -4,12 +4,8 @@ Make sure you’re following our account to use this service. Send us a clip or 
 Note: You can make 1 request every 3 minutes.
 `;
 
-export enum MessageOP {
-  Add = "add", // new message
-  Update = "update", // seen etc.
-}
 
-export const SystemPrompt = `
+export const SYSTEM_PROMPT = `
   You are an expert in identifying movies or series using images with computer vision.
   Do not explain the image; just provide a list of movies or series that the image is from.
   If you are confident, provide only one response. Otherwise, provide the two best guesses.
@@ -24,7 +20,7 @@ export const SystemPrompt = `
   Summary: An indolent artist in Portland, Oregon becomes addicted to marijuana, prompting his girlfriend to flee to New York City with a heroin addict.
   Director: Richard Sears
   `;
-export const UserPrompt = "Predict the movie or series from the given image";
+export const USER_PROMPT = "Predict the movie or series from the given image";
 
 export const OPENAI_MODEL = "gpt-4o";
 export const OPENAI_MAX_TOKENS = 400;

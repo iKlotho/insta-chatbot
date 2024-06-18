@@ -3,6 +3,7 @@ import { logger, writeToFile } from "./utils";
 import { classifyImage } from "./classifier";
 import { RateLimiterMemory } from "rate-limiter-flexible";
 import { LIMIT_RETRY_INFO, MessageOP, WELCOME_MESSAGE } from "./constants";
+import { MessageItemType } from "./enums";
 
 class MessageHandler {
   private ig: IgApiClientRealtime;
@@ -86,13 +87,13 @@ class MessageHandler {
   public findSpriteUrl(message: any) {
     let spriteUrl: any = null;
 
-    if (message.item_type === "clip") {
+    if (message.item_type === MessageItemType.Clip) {
       const { clip } = message.clip;
       // spriteUrl =
       //   clip.image_versions2?.scrubber_spritesheet_info_candidates?.default
       //     ?.sprite_urls || clip.image_versions2?.candidates?.[0]?.url;
       spriteUrl = clip.image_versions2?.candidates?.[0]?.url;
-    } else if (message.item_type === "media_share") {
+    } else if (message.item_type === MessageItemType.MediaShare) {
       const { media_share } = message;
       spriteUrl = media_share.image_versions2?.candidates?.[0].url;
     } else {
