@@ -1,6 +1,6 @@
 import * as path from "path";
 import * as winston from "winston";
-import { promises as fs, constants } from "fs";
+import { promises as fs } from "fs";
 import axios from "axios";
 
 export interface AuthData {
@@ -51,31 +51,6 @@ export async function downloadImageToBase64(url: string): Promise<string> {
     logger.error(`Error downloading or converting image: ${error.message}`);
     throw error;
   }
-}
-
-export async function sessionSave(data: object) {
-  await writeToFile("session/", "account.session", JSON.stringify(data));
-  return data;
-}
-
-export async function sessionExists(): Promise<boolean> {
-  try {
-    await fs.access(path.join("session", "account.session"), constants.F_OK);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-export async function sessionLoad(): Promise<object | null> {
-  if (await sessionExists()) {
-    const sessionData = await fs.readFile(
-      path.join("session/", "account.session"),
-      "utf-8"
-    );
-    return JSON.parse(sessionData);
-  }
-  return null;
 }
 
 export async function saveMessage(message: any): Promise<void> {

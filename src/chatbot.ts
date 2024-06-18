@@ -2,18 +2,14 @@ import { IgApiClientRealtime, withRealtime } from "instagram_mqtt";
 import MessageHandler from "./messageHandler";
 import { IgApiClient } from "instagram-private-api";
 import { RateLimiterMemory } from "rate-limiter-flexible";
-import {
-  AuthData,
-  logger,
-  sessionExists,
-  sessionLoad,
-  sessionSave,
-} from "./utils";
+import { AuthData, logger } from "./utils";
 import { DEFAULT_REQUEST_DELAY } from "./constants";
+import SessionManager from "./sessionManager";
 
 export default class ChatBot {
   private ig: IgApiClientRealtime;
   private messageHandler: MessageHandler;
+  private sessionManager: SessionManager;
 
   constructor(requestDelayMinutes: number, notifyLimit: boolean) {
     this.ig = withRealtime(new IgApiClient());
@@ -22,6 +18,7 @@ export default class ChatBot {
       requestDelayMinutes,
       notifyLimit
     );
+    this.sessionManager = new SessionManager();
   }
 
   public static async create(
@@ -70,11 +67,11 @@ export default class ChatBot {
     this.ig.request.end$.subscribe(async () => {
       const serialized = await this.ig.state.serialize();
       delete serialized.constants; // this deletes the version info, so you'll always use the version provided by the library
-      sessionSave(serialized);
+      this.sessionManager.sessionSave(serialized);
     });
-    if (await sessionExists()) {
-      await this.ig.state.deserialize(await sessionLoad());
-    }
+    const sessionData = await this.sessionManager.sessionLoad();
+    if (!sessionData) return;
+    await this.ig.state.deserialize(sessionData);
   }
 
   private registerListeners() {

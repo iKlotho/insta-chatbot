@@ -37,10 +37,16 @@ class MessageHandler {
   public onMessage = async (data: any): Promise<void> => {
     const { message } = data;
     const { user_id: userId } = message;
-
-    if (process.env.DEBUG) {
-      await saveMessage(message);
+    if (!userId) return;
+    if (userId === this.accountUserId) return;
+    if (message.op !== MessageOperation.Add) {
+      logger.info(
+        `Got new message with op ${message.op} from ${message.thread_id}`
+      );
+      return;
     }
+
+    if (process.env.DEBUG) await saveMessage(message);
     logger.info(`Got new message from ${userId}`);
 
     // check user limit
