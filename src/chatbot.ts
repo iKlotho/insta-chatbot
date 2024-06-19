@@ -36,7 +36,6 @@ export default class ChatBot {
       notifyLimit || true
     );
     await instance.initialize();
-    instance.messageHandler.initUserId();
     return instance;
   }
 

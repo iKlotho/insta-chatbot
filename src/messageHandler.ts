@@ -13,7 +13,6 @@ import { MessageItemType, MessageOperation } from "./enums";
 class MessageHandler {
   private ig: IgApiClientRealtime;
   private limiter: RateLimiterMemory;
-  private accountUserId?: number;
   private notifyLimit: boolean;
 
   constructor(
@@ -33,15 +32,18 @@ class MessageHandler {
     );
   }
 
-  initUserId() {
-    this.accountUserId = Number.parseInt(this.ig.state.cookieUserId);
-  }
-
   public onMessage = async (data: any): Promise<void> => {
     const { message } = data;
     const { user_id: userId } = message;
-    if (!userId) return;
-    if (userId === this.accountUserId) return;
+    const accountUserId = Number.parseInt(this.ig.state.cookieUserId);
+    if (!userId) {
+      logger.warning("No user id found for the message");
+      return;
+    }
+    if (userId === accountUserId) {
+      logger.warning("Skipping message same user id");
+      return;
+    }
     if (message.op !== MessageOperation.Add) {
       logger.info(
         `Got new message with op ${message.op} from ${message.thread_id}`
