@@ -37,11 +37,11 @@ class MessageHandler {
     const { user_id: userId } = message;
     const accountUserId = Number.parseInt(this.ig.state.cookieUserId);
     if (!userId) {
-      logger.warning("No user id found for the message");
+      logger.info("No user id found for the message");
       return;
     }
     if (userId === accountUserId) {
-      logger.warning("Skipping message same user id");
+      logger.info("Skipping message same user id");
       return;
     }
     if (message.op !== MessageOperation.Add) {
