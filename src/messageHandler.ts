@@ -13,7 +13,7 @@ import { MessageItemType, MessageOperation } from "./enums";
 class MessageHandler {
   private ig: IgApiClientRealtime;
   private limiter: RateLimiterMemory;
-  private accountUserId: number;
+  private accountUserId?: number;
   private notifyLimit: boolean;
 
   constructor(
@@ -22,7 +22,6 @@ class MessageHandler {
     notifyLimit: boolean
   ) {
     this.ig = ig;
-    this.accountUserId = Number.parseInt(ig.state.cookieUserId);
     this.limiter = new RateLimiterMemory({
       // 1 req per X minute
       points: 1,
@@ -32,6 +31,10 @@ class MessageHandler {
     logger.info(
       `MessageHandler created with message limit as 1req/${requestDelayMinutes}m`
     );
+  }
+
+  initUserId() {
+    this.accountUserId = Number.parseInt(this.ig.state.cookieUserId);
   }
 
   public onMessage = async (data: any): Promise<void> => {

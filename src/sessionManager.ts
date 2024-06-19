@@ -3,15 +3,12 @@ import { writeToFile } from "./utils";
 import * as path from "path";
 
 export default class SessionManager {
-  private filename: string;
-  private filepath: string;
-  constructor() {
-    this.filename = "account_session.json";
-    this.filepath = path.join("./session/", this.filename);
-  }
+  private filename: string = "account_session.json";
+  private fileRootpath: string = "./session/";
+  private filepath: string = path.join(this.fileRootpath, this.filename);
 
   async sessionSave(data: object): Promise<object> {
-    await writeToFile(this.filepath, this.filename, JSON.stringify(data));
+    await writeToFile(this.fileRootpath, this.filename, JSON.stringify(data));
     return data;
   }
 
@@ -26,6 +23,7 @@ export default class SessionManager {
 
   async sessionLoad(): Promise<object | null> {
     if (await this.sessionExists()) {
+      console.log(`Reading file from path: ${this.filepath}`);
       const sessionData = await fs.readFile(this.filepath, "utf-8");
       return JSON.parse(sessionData);
     }
