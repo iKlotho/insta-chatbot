@@ -2,13 +2,14 @@ import { IgApiClientRealtime, withRealtime } from "instagram_mqtt";
 import MessageHandler from "./messageHandler";
 import { IgApiClient } from "instagram-private-api";
 import { AuthData, logger } from "./utils";
-import { DEFAULT_REQUEST_DELAY } from "./constants";
+import { DEFAULT_REQUEST_DELAY, REALTIME_RECONNECT_DELAY } from "./constants";
 import SessionManager from "./sessionManager";
 
 export default class ChatBot {
   private ig: IgApiClientRealtime;
   private messageHandler: MessageHandler;
   private sessionManager: SessionManager;
+  private intervalId?: any;
 
   constructor(requestDelayMinutes: number, notifyLimit: boolean) {
     this.ig = withRealtime(new IgApiClient());
@@ -42,11 +43,33 @@ export default class ChatBot {
   /**
    * Starts the ChatBot by connecting to Instagram's real-time service.
    */
-  public async start(): Promise<any> {
+  async connect() {
+    logger.info("Connected to realtime");
     return this.ig.realtime.connect({
       irisData: await this.ig.feed.directInbox().request(),
       connectOverrides: {},
     });
+  }
+  public async start(): Promise<any> {
+    await this.connect();
+    if (!this.intervalId) {
+      logger.info("Created a interval for realtime reconnect");
+      this.intervalId = setInterval(async () => {
+        try {
+          await this.ig.realtime.disconnect();
+          // Wait 5 seconds
+          await new Promise((resolve) => setTimeout(resolve, 5000));
+          // Reconnect
+          await this.connect();
+        } catch (err) {
+          console.error("Failed to reconnect:", err);
+        }
+      }, REALTIME_RECONNECT_DELAY); // 30 min
+    }
+  }
+
+  async disconnect() {
+    logger.info("Disconnected from realtime");
   }
 
   private async initialize(): Promise<void> {
@@ -91,6 +114,7 @@ export default class ChatBot {
         )}`
       )
     );
+    this.ig.realtime.on("disconnect", this.disconnect);
     this.ig.realtime.on("message", this.messageHandler.onMessage);
     this.ig.realtime.on("error", logger.error);
     this.ig.realtime.on("close", () => logger.error("RealtimeClient closed"));

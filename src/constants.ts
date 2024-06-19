@@ -3,6 +3,7 @@ export const OPENAI_MAX_TOKENS = 400;
 
 export const LIMIT_RETRY_INFO = 3;
 export const DEFAULT_REQUEST_DELAY = 5; // minutes
+export const REALTIME_RECONNECT_DELAY = 30 * 60 * 1000; // ms
 
 export const PREDICTION_FAIL_MESSAGE = `Sorry, looks like OpenAI could not identify this.`;
 export const WELCOME_MESSAGE = `
