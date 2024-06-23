@@ -4,11 +4,13 @@ import { IgApiClient } from "instagram-private-api";
 import { AuthData, logger } from "./utils";
 import { DEFAULT_REQUEST_DELAY, REALTIME_RECONNECT_DELAY } from "./constants";
 import SessionManager from "./sessionManager";
+import { PendingMessageManager } from "./pendingManager";
 
 export default class ChatBot {
   private ig: IgApiClientRealtime;
   private messageHandler: MessageHandler;
   private sessionManager: SessionManager;
+  private pendingManager: PendingMessageManager;
   private intervalId?: any;
 
   constructor(requestDelayMinutes: number, notifyLimit: boolean) {
@@ -19,6 +21,7 @@ export default class ChatBot {
       notifyLimit
     );
     this.sessionManager = new SessionManager();
+    this.pendingManager = new PendingMessageManager(this.ig);
   }
 
   /**
@@ -36,6 +39,7 @@ export default class ChatBot {
       notifyLimit || true
     );
     await instance.initialize();
+    await instance.pendingManager.initialize();
     return instance;
   }
 
@@ -49,6 +53,7 @@ export default class ChatBot {
       connectOverrides: {},
     });
   }
+
   public async start(): Promise<any> {
     await this.connect();
     if (!this.intervalId) {
@@ -63,7 +68,7 @@ export default class ChatBot {
         } catch (err) {
           console.error("Failed to reconnect:", err);
         }
-      }, REALTIME_RECONNECT_DELAY); // 30 min
+      }, REALTIME_RECONNECT_DELAY);
     }
   }
 
@@ -115,6 +120,9 @@ export default class ChatBot {
     );
     this.ig.realtime.on("disconnect", this.disconnect);
     this.ig.realtime.on("message", this.messageHandler.onMessage);
+    this.ig.realtime.on("direct", (data) => {
+      console.log("new direct", data);
+    });
     this.ig.realtime.on("error", logger.error);
     this.ig.realtime.on("close", () => logger.error("RealtimeClient closed"));
   }
