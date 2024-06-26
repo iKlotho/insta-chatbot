@@ -10,7 +10,7 @@ export class PendingMessageManager {
   }
 
   async initialize() {
-    this.approvePendingMessages();
+    await this.approvePendingMessages();
 
     setInterval(async () => {
       await this.approvePendingMessages();
